@@ -30,15 +30,24 @@
   td:first-child { text-transform:capitalize; }
   td:last-child { text-align:right; }
   h2 { font-size:1rem; margin:0 0 8px; }
+    .fecha-campos { display:grid; grid-template-columns: 1fr 2fr 1.4fr; gap:8px; }
 </style>
 </head>
 <body>
 <main>
   <h1>Calculadora de turnos 2x2x2</h1>
 
-  <form method="get" class="card">
-    <label for="fecha_ref">Fecha de referencia (normalmente hoy)</label>
-    <input type="date" id="fecha_ref" name="fecha_ref" value="{{ fecha_ref }}" required>
+    <form method="get" class="card">
+    <label>Fecha de referencia (normalmente hoy)</label>
+    <div class="fecha-campos">
+      <input type="number" name="ref_d" inputmode="numeric" min="1" max="31" placeholder="Día" value="{{ ref.d }}" required>
+      <select name="ref_m">
+        {% for num, nombre in meses %}
+          <option value="{{ num }}" {% if ref.m == num %}selected{% endif %}>{{ nombre|capfirst }}</option>
+        {% endfor %}
+      </select>
+      <input type="number" name="ref_a" inputmode="numeric" min="2020" max="2100" placeholder="Año" value="{{ ref.a }}" required>
+    </div>
 
     <label for="indice_ref">Turno que tiene en esa fecha</label>
     <select id="indice_ref" name="indice_ref">
@@ -47,8 +56,16 @@
       {% endfor %}
     </select>
 
-    <label for="fecha_obj">Fecha que quieres consultar</label>
-    <input type="date" id="fecha_obj" name="fecha_obj" value="{{ fecha_obj }}" required>
+    <label>Fecha que quieres consultar</label>
+    <div class="fecha-campos">
+      <input type="number" name="obj_d" inputmode="numeric" min="1" max="31" placeholder="Día" value="{{ obj.d }}" required>
+      <select name="obj_m">
+        {% for num, nombre in meses %}
+          <option value="{{ num }}" {% if obj.m == num %}selected{% endif %}>{{ nombre|capfirst }}</option>
+        {% endfor %}
+      </select>
+      <input type="number" name="obj_a" inputmode="numeric" min="2020" max="2100" placeholder="Año" value="{{ obj.a }}" required>
+    </div>
 
     <button type="submit">Calcular</button>
   </form>
