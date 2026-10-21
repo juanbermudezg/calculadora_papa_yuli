@@ -1,28 +1,63 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-tema="hombre" data-bs-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Calculadora de turnos</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<style>
-  :root {
-    --lila: #b9a0e0;
-    --lila-suave: #efe7fa;
-    --rosa: #f4a9c8;
-    --rosa-suave: #fdeaf3;
-    --durazno: #fff3ec;
-    --texto: #4a3b5c;
-    --texto-suave: #7d6f8e;
-    --borde: #eadcf5;
+
+<script>
+  // Se ejecuta antes de pintar la página para evitar parpadeos al cargar el tema guardado
+  function aplicarTema(t) {
+    document.documentElement.dataset.tema = t;
+    document.documentElement.dataset.bsTheme = (t === 'mujer') ? 'light' : 'dark';
   }
+  (function () {
+    var t = 'hombre';
+    try { t = localStorage.getItem('tema') || 'hombre'; } catch (e) {}
+    aplicarTema(t === 'mujer' ? 'mujer' : 'hombre');
+  })();
+</script>
+
+<style>
+  /* ---------- Tema HOMBRE (por defecto): negro / gris / blanco pastel ---------- */
+  :root, [data-tema="hombre"] {
+    --bg1: #1b1c1f; --bg2: #25262a; --bg3: #2e2f34;
+    --card: rgba(46, 47, 52, .85);
+    --borde: #3f4147;
+    --texto: #ececee;
+    --suave: #a3a6ad;
+    --acento1: #d8dadf; --acento2: #aeb2ba;
+    --btn-texto: #1b1c1f;
+    --input-bg: #222327;
+    --sombra: rgba(0, 0, 0, .35);
+    --c-d-bg: #e9eaed; --c-d-fg: #2a2c30;
+    --c-n-bg: #4b4f57; --c-n-fg: #f0f1f3;
+    --c-r-bg: transparent; --c-r-fg: #b8bcc3; --c-r-borde: #6b7078;
+  }
+  /* ---------- Tema MUJER: lila / rosa / durazno pastel ---------- */
+  [data-tema="mujer"] {
+    --bg1: #efe7fa; --bg2: #fdeaf3; --bg3: #fff3ec;
+    --card: rgba(255, 255, 255, .85);
+    --borde: #eadcf5;
+    --texto: #4a3b5c;
+    --suave: #7d6f8e;
+    --acento1: #b9a0e0; --acento2: #f4a9c8;
+    --btn-texto: #3d2d50;
+    --input-bg: #ffffff;
+    --sombra: rgba(185, 160, 224, .2);
+    --c-d-bg: #fde0ec; --c-d-fg: #a24468;
+    --c-n-bg: #e3d9f6; --c-n-fg: #5a4380;
+    --c-r-bg: #dff3e8; --c-r-fg: #3d7a5a; --c-r-borde: transparent;
+  }
+
   html, body { height: 100%; }
   body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
     min-height: 100dvh;
-    background: linear-gradient(160deg, var(--lila-suave) 0%, var(--rosa-suave) 55%, var(--durazno) 100%);
+    background: linear-gradient(160deg, var(--bg1) 0%, var(--bg2) 55%, var(--bg3) 100%);
     background-attachment: fixed;
     color: var(--texto);
     font-size: clamp(.95rem, .9rem + .3vw, 1.1rem);
@@ -30,52 +65,103 @@
   main { flex: 1 0 auto; width: 100%; }
   h1 { color: var(--texto); font-size: clamp(1.25rem, 1rem + 1.5vw, 1.9rem); font-weight: 600; }
   h2 { color: var(--texto); font-size: 1rem; font-weight: 600; }
+  a { color: var(--acento1); }
+  .suave { color: var(--suave); }
 
   .card {
-    background: rgba(255, 255, 255, .85);
+    background: var(--card);
     border: 1px solid var(--borde);
     border-radius: 18px;
-    box-shadow: 0 4px 16px rgba(185, 160, 224, .15);
+    box-shadow: 0 4px 16px var(--sombra);
+    color: var(--texto);
   }
-  .form-label { color: var(--texto-suave); font-size: .9rem; margin-bottom: .25rem; }
-  .form-control, .form-select { border-color: var(--borde); border-radius: 10px; color: var(--texto); }
+  .form-label { color: var(--suave); font-size: .9rem; margin-bottom: .25rem; }
+  .form-control, .form-select {
+    background-color: var(--input-bg);
+    border-color: var(--borde);
+    border-radius: 10px;
+    color: var(--texto);
+  }
+  .form-control::placeholder { color: var(--suave); opacity: .8; }
   .form-control:focus, .form-select:focus {
-    border-color: var(--lila);
-    box-shadow: 0 0 0 .2rem rgba(185, 160, 224, .3);
+    background-color: var(--input-bg);
+    color: var(--texto);
+    border-color: var(--acento1);
+    box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--acento1) 35%, transparent);
   }
+  .form-check-input:checked { background-color: var(--acento2); border-color: var(--acento2); }
+  .form-check-input:focus { box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--acento1) 35%, transparent); border-color: var(--acento1); }
+
   .btn-calcular {
-    background: linear-gradient(90deg, var(--lila), var(--rosa));
+    background: linear-gradient(90deg, var(--acento1), var(--acento2));
     border: 0; border-radius: 12px; padding: .75rem;
-    color: #3d2d50; font-weight: 600;
+    color: var(--btn-texto); font-weight: 600;
   }
-  .btn-calcular:hover, .btn-calcular:focus { color: #3d2d50; filter: brightness(1.04); }
+  .btn-calcular:hover, .btn-calcular:focus { color: var(--btn-texto); filter: brightness(1.06); }
 
   .fecha-campos { display: grid; grid-template-columns: 1fr 2fr 1.4fr; gap: 8px; }
 
-  .resultado-fecha { color: var(--texto-suave); text-transform: capitalize; }
+  .resultado-fecha { color: var(--suave); text-transform: capitalize; }
   .resultado-turno { font-size: clamp(1.8rem, 1.2rem + 3vw, 2.8rem); font-weight: 700; line-height: 1.1; }
-  .vacio { color: var(--texto-suave); text-align: center; }
+  .vacio { color: var(--suave); text-align: center; }
 
-  .chip { display: inline-block; padding: .15rem .7rem; border-radius: 20px; font-size: .85rem; font-weight: 600; }
-  .chip-diurno { background: #fde0ec; color: #a24468; }
-  .chip-nocturno { background: #e3d9f6; color: #5a4380; }
-  .chip-descanso { background: #dff3e8; color: #3d7a5a; }
+  .chip { display: inline-block; padding: .15rem .7rem; border-radius: 20px; font-size: .85rem; font-weight: 600; border: 1px solid transparent; }
+  .chip-diurno { background: var(--c-d-bg); color: var(--c-d-fg); }
+  .chip-nocturno { background: var(--c-n-bg); color: var(--c-n-fg); }
+  .chip-descanso { background: var(--c-r-bg); color: var(--c-r-fg); border-color: var(--c-r-borde); }
 
-  .tabla td { padding: .6rem .25rem; border-color: var(--borde); vertical-align: middle; }
+  .tabla { --bs-table-bg: transparent; --bs-table-color: var(--texto); margin-bottom: 0; }
+  .tabla td { padding: .6rem .25rem; border-bottom: 1px solid var(--borde); vertical-align: middle; }
+  .tabla tr:last-child td { border-bottom: 0; }
   .tabla td:first-child { text-transform: capitalize; }
 
-  footer.mensaje {
-    flex-shrink: 0;
-    margin: 0 auto 1rem;
-    width: calc(100% - 2rem);
-    max-width: 960px;
-    text-align: center;
+  /* ---------- Pie de página ---------- */
+  .pie { flex-shrink: 0; width: 100%; max-width: 960px; margin: 0 auto; padding: 0 1rem 1rem; }
+  .pie-normal { font-size: .85rem; padding-top: .25rem; }
+  .codigo-input {
+    width: 5.5rem; text-align: center; font-size: .8rem; padding: .2rem .4rem;
+    opacity: .55; transition: opacity .2s;
   }
-  footer.mensaje p { margin: 0; color: var(--texto); }
+  .codigo-input:focus { opacity: 1; }
+  .shake { animation: shake .4s; }
+  @keyframes shake { 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
+
+  .mensaje-amor { text-align: center; margin-bottom: .75rem; }
+  .mensaje-amor p { margin: 0; }
+  .aparece { animation: aparece .8s ease both; }
+  @keyframes aparece { from { opacity: 0; transform: translateY(12px) scale(.97); } to { opacity: 1; transform: none; } }
+
+  /* ---------- Animación de corazones y aviones ---------- */
+  #capa-anim { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 2000; }
+  #capa-anim .item { position: absolute; will-change: transform, opacity; }
+  #capa-anim .corazon { bottom: -60px; animation-name: subir; animation-timing-function: ease-in; animation-fill-mode: both; }
+  #capa-anim .avion { left: 0; animation-name: volar; animation-timing-function: linear; animation-fill-mode: both; }
+  @keyframes subir {
+    0%   { transform: translate(0, 0) scale(.7); opacity: 0; }
+    10%  { opacity: 1; }
+    100% { transform: translate(var(--dx), -115vh) scale(1.2); opacity: 0; }
+  }
+  @keyframes volar {
+    0%   { transform: translate(-15vw, 0); opacity: 0; }
+    8%   { opacity: 1; }
+    92%  { opacity: 1; }
+    100% { transform: translate(115vw, var(--dy)); opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) { #capa-anim { display: none; } .aparece { animation: none; } }
 </style>
 </head>
 <body>
-<main class="container-xl py-4 px-3">
+
+<div id="capa-anim" aria-hidden="true"></div>
+
+<main class="container-xl py-3 px-3">
+  <div class="d-flex justify-content-end mb-2">
+    <div class="form-check form-switch m-0">
+      <input class="form-check-input" type="checkbox" role="switch" id="switch-tema">
+      <label class="form-check-label suave" for="switch-tema">Cambiar tema</label>
+    </div>
+  </div>
+
   <h1 class="text-center mb-4">Calculadora de turnos 2x2x2</h1>
 
   <div class="row g-3 justify-content-center">
@@ -131,13 +217,13 @@
 
         <div class="card p-3 p-md-4">
           <h2 class="mb-2">Los siguientes 7 días</h2>
-          <table class="table table-borderless tabla mb-0">
+          <table class="table tabla">
             {% for f in proximos %}
             <tr>
               <td>{{ f.fecha }}</td>
               <td class="text-end">
                 <span class="chip chip-{{ f.turno|lower }}">{{ f.turno }}</span>
-                <small class="text-muted">{{ f.dia }}</small>
+                <small class="suave">{{ f.dia }}</small>
               </td>
             </tr>
             {% endfor %}
@@ -153,8 +239,114 @@
   </div>
 </main>
 
-<footer class="card p-3 mensaje">
-  <p>Hecho por Juan para mi amorcito Yuli, te amo mucho ❤️.</p>
-</footer>
+<div class="pie">
+  <!-- Mensaje secreto: aparece al escribir el código -->
+  <div id="mensaje-amor" class="card p-3 mensaje-amor" hidden>
+    <p>Hecho por Juan para mi amorcito Yuli, te amo mucho ❤️.</p>
+  </div>
+
+  <!-- Pie normal -->
+  <footer class="pie-normal suave d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <span>
+      Hecho por Juan Bermúdez ·
+      <a href="https://github.com/juanbermudezg" target="_blank" rel="noopener">GitHub</a>
+    </span>
+    <form id="form-codigo" autocomplete="off">
+      <input id="codigo" class="form-control codigo-input" type="text" inputmode="numeric"
+             maxlength="4" placeholder="código" aria-label="Código secreto">
+    </form>
+  </footer>
+</div>
+
+<script>
+  var CODIGO = '2705';
+
+  function leer(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function guardar(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+  /* ---------- Cambio de tema ---------- */
+  var sw = document.getElementById('switch-tema');
+  sw.checked = (document.documentElement.dataset.tema === 'mujer');
+  sw.addEventListener('change', function () {
+    var t = sw.checked ? 'mujer' : 'hombre';
+    aplicarTema(t);
+    guardar('tema', t);
+  });
+
+  /* ---------- Easter egg ---------- */
+  var mensaje = document.getElementById('mensaje-amor');
+  var input = document.getElementById('codigo');
+  var capa = document.getElementById('capa-anim');
+
+  function aleatorio(min, max) { return Math.random() * (max - min) + min; }
+
+  function lanzarAnimacion() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    capa.innerHTML = '';
+    var emojis = ['❤️', '💖', '💗', '💕', '💜'];
+
+    for (var i = 0; i < 40; i++) {
+      var c = document.createElement('span');
+      c.className = 'item corazon';
+      c.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      c.style.left = aleatorio(0, 95) + '%';
+      c.style.fontSize = aleatorio(18, 40) + 'px';
+      c.style.animationDuration = aleatorio(3.5, 6) + 's';
+      c.style.animationDelay = aleatorio(0, 2.5) + 's';
+      c.style.setProperty('--dx', aleatorio(-70, 70) + 'px');
+      capa.appendChild(c);
+    }
+    for (var j = 0; j < 7; j++) {
+      var a = document.createElement('span');
+      a.className = 'item avion';
+      a.textContent = '✈️';
+      a.style.top = aleatorio(8, 80) + 'vh';
+      a.style.fontSize = aleatorio(26, 44) + 'px';
+      a.style.animationDuration = aleatorio(4, 6.5) + 's';
+      a.style.animationDelay = aleatorio(0, 2.5) + 's';
+      a.style.setProperty('--dy', aleatorio(-140, -20) + 'px');
+      capa.appendChild(a);
+    }
+    setTimeout(function () { capa.innerHTML = ''; }, 10000);
+  }
+
+  function mostrarMensaje(conAnimacion) {
+    mensaje.hidden = false;
+    if (conAnimacion) {
+      mensaje.classList.remove('aparece');
+      void mensaje.offsetWidth;            // reinicia la animación CSS
+      mensaje.classList.add('aparece');
+      mensaje.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      lanzarAnimacion();
+    }
+  }
+
+    function revisarCodigo() {
+    if (input.value.trim() === CODIGO) {
+      guardar('amor', '1');
+      // Al desbloquear, se activa la versión mujer y se guarda
+      aplicarTema('mujer');
+      guardar('tema', 'mujer');
+      sw.checked = true;
+      input.value = '';
+      input.blur();
+      mostrarMensaje(true);
+    } else if (input.value.length >= 4) {
+      input.classList.remove('shake');
+      void input.offsetWidth;
+      input.classList.add('shake');
+      input.value = '';
+    }
+  }
+
+  input.addEventListener('input', revisarCodigo);
+  document.getElementById('form-codigo').addEventListener('submit', function (e) {
+    e.preventDefault();
+    revisarCodigo();
+  });
+
+  // Si ya lo desbloqueó antes en este navegador, se muestra sin animación
+  if (leer('amor') === '1') mostrarMensaje(false);
+</script>
 </body>
 </html>
