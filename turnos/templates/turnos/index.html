@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculadora de turnos</title>
+<style>
+  :root { --fg:#1f2933; --bg:#f4f5f7; --card:#fff; --borde:#d5d9de; --muted:#5f6b76; --acento:#2f4858; }
+  @media (prefers-color-scheme: dark) {
+    :root { --fg:#e6e9ec; --bg:#16191c; --card:#1f2327; --borde:#343a40; --muted:#9aa5af; --acento:#7fa3b8; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:16px; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+         background:var(--bg); color:var(--fg); line-height:1.4; }
+  main { max-width:480px; margin:0 auto; }
+  h1 { font-size:1.25rem; margin:8px 0 16px; }
+  .card { background:var(--card); border:1px solid var(--borde); border-radius:6px; padding:16px; margin-bottom:16px; }
+  label { display:block; font-size:.9rem; color:var(--muted); margin:12px 0 4px; }
+  label:first-child { margin-top:0; }
+  input, select { width:100%; padding:10px; font-size:1rem; border:1px solid var(--borde); border-radius:4px;
+                  background:var(--bg); color:var(--fg); }
+  button { width:100%; margin-top:16px; padding:12px; font-size:1rem; border:0; border-radius:4px;
+           background:var(--acento); color:#fff; cursor:pointer; }
+  @media (prefers-color-scheme: dark) { button { color:#111; } }
+  .resultado .fecha { color:var(--muted); font-size:.95rem; text-transform:capitalize; }
+  .resultado .turno { font-size:1.6rem; font-weight:600; margin:4px 0; }
+  .error { color:#b3261e; }
+  table { width:100%; border-collapse:collapse; font-size:.9rem; }
+  td { padding:8px 4px; border-top:1px solid var(--borde); }
+  td:first-child { text-transform:capitalize; }
+  td:last-child { text-align:right; }
+  h2 { font-size:1rem; margin:0 0 8px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Calculadora de turnos 2x2x2</h1>
+
+  <form method="get" class="card">
+    <label for="fecha_ref">Fecha de referencia (normalmente hoy)</label>
+    <input type="date" id="fecha_ref" name="fecha_ref" value="{{ fecha_ref }}" required>
+
+    <label for="indice_ref">Turno que tiene en esa fecha</label>
+    <select id="indice_ref" name="indice_ref">
+      {% for valor, etiqueta in opciones %}
+        <option value="{{ valor }}" {% if valor == indice_ref %}selected{% endif %}>{{ etiqueta }}</option>
+      {% endfor %}
+    </select>
+
+    <label for="fecha_obj">Fecha que quieres consultar</label>
+    <input type="date" id="fecha_obj" name="fecha_obj" value="{{ fecha_obj }}" required>
+
+    <button type="submit">Calcular</button>
+  </form>
+
+  {% if error %}<p class="error">{{ error }}</p>{% endif %}
+
+  {% if resultado %}
+  <div class="card resultado">
+    <div class="fecha">{{ resultado.fecha }}</div>
+    <div class="turno">{{ resultado.turno }}</div>
+    <div>{{ resultado.dia }}</div>
+  </div>
+
+  <div class="card">
+    <h2>Los siguientes 7 días</h2>
+    <table>
+      {% for f in proximos %}
+      <tr><td>{{ f.fecha }}</td><td>{{ f.turno }} ({{ f.dia }})</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+  {% endif %}
+</main>
+<footer class="card resultado">
+  <p>
+    Hecho por Juan para mi amorcito Yuli, te amo mucho ❤️.
+  </p>
+</footer>
+</body>
+</html>
